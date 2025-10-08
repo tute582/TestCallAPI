@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <title>志工資料查詢</title>
+</head>
+<body>
+  <h1>志工資訊</h1>
+  <div id="volunteer"></div>
+
+  <script>
+    // 你的 Vercel API
+    const apiUrl = "https://supabase-api-six.vercel.app/volunteers";
+
+    // 向 API 發送 GET 請求
+    fetch(apiUrl)
+    .then(res => res.json())
+    .then(data => {
+        const container = document.getElementById("volunteer");
+
+        // 將每位志工顯示出來
+        container.innerHTML = data.map(v => `
+        <div style="border:1px solid #ccc; padding:10px; margin:5px;">
+            <p><strong>姓名：</strong> ${v.V_Name}</p>
+            <p><strong>性別：</strong> ${v.V_Gender}</p>
+            <p><strong>年齡：</strong> ${v.V_Age}</p>
+            <p><strong>專長：</strong> ${v.V_Mettle}</p>
+            <p><strong>空閒時間：</strong> ${v.FreeTime}</p>
+        </div>
+        `).join("");
+    })
+    .catch(err => {
+        console.error(err);
+        document.getElementById("volunteer").innerText = "無法取得志工資料。";
+    });
+
+  </script>
+</body>
+</html>

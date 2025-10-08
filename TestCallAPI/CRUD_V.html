@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <title>志工資訊 CRUD 測試</title>
+</head>
+<body>
+  <h1>志工資訊管理</h1>
+
+  <h2>➕ 新增志工</h2>
+  <form id="addForm">
+    <input type="text" id="V_Name" placeholder="姓名" required />
+    <input type="text" id="V_Gender" placeholder="性別" required />
+    <input type="number" id="V_Age" placeholder="年齡" />
+    <input type="text" id="V_Mettle" placeholder="專長" />
+    <input type="text" id="FreeTime" placeholder="空閒時間" />
+    <button type="submit">新增</button>
+  </form>
+
+  <h2>📋 志工列表</h2>
+  <div id="volunteer"></div>
+
+  <script>
+    const apiUrl = "https://supabase-api-six.vercel.app/volunteers";
+
+    // 🔹 讀取志工資料
+    async function loadVolunteers() {
+      const container = document.getElementById("volunteer");
+      container.innerHTML = "讀取中...";
+      try {
+        const res = await fetch(apiUrl);
+        const data = await res.json();
+
+        container.innerHTML = data.map(v => `
+          <div style="border:1px solid #ccc; padding:10px; margin:5px;">
+            <p><strong>姓名：</strong> ${v.V_Name}</p>
+            <p><strong>性別：</strong> ${v.V_Gender}</p>
+            <p><strong>年齡：</strong> ${v.V_Age}</p>
+            <p><strong>專長：</strong> ${v.V_Mettle}</p>
+            <p><strong>空閒時間：</strong> ${v.FreeTime}</p>
+            <button onclick="deleteVolunteer('${v.V_UserID}')">刪除</button>
+            <button onclick="updateVolunteer('${v.V_UserID}')">更新</button>
+          </div>
+        `).join("");
+      } catch (err) {
+        console.error(err);
+        container.innerText = "❌ 無法取得志工資料";
+      }
+    }
+
+    // 🔹 新增志工
+    document.getElementById("addForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const newVolunteer = {
+        V_Name: document.getElementById("V_Name").value,
+        V_Gender: document.getElementById("V_Gender").value,
+        V_Age: parseInt(document.getElementById("V_Age").value) || null,
+        V_Mettle: document.getElementById("V_Mettle").value,
+        FreeTime: document.getElementById("FreeTime").value,
+        V_UserID: "test_line_id_" + Math.random().toString(36).slice(2, 8) // 假資料
+      };
+
+      try {
+        const res = await fetch(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newVolunteer)
+        });
+        if (!res.ok) throw new Error("新增失敗");
+        alert("✅ 新增成功！");
+        loadVolunteers();
+        e.target.reset();
+      } catch (err) {
+        alert("❌ 新增失敗：" + err.message);
+      }
+    });
+
+    // 🔹 刪除志工
+    async function deleteVolunteer(id) {
+      if (!confirm("確定要刪除嗎？")) return;
+      try {
+        const res = await fetch(`${apiUrl}/${id}`, { method: "DELETE" });
+        if (!res.ok) throw new Error("刪除失敗");
+        alert("🗑️ 刪除成功！");
+        loadVolunteers();
+      } catch (err) {
+        alert("❌ 刪除失敗：" + err.message);
+      }
+    }
+
+    // 🔹 更新志工（示範修改年齡）
+    async function updateVolunteer(id) {
+      const newAge = prompt("請輸入新的年齡：");
+      if (!newAge) return;
+      try {
+        const res = await fetch(`${apiUrl}/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ V_Age: parseInt(newAge) })
+        });
+        if (!res.ok) throw new Error("更新失敗");
+        alert("✅ 更新成功！");
+        loadVolunteers();
+      } catch (err) {
+        alert("❌ 更新失敗：" + err.message);
+      }
+    }
+
+    // 頁面載入時執行
+    loadVolunteers();
+  </script>
+</body>
+</html>
