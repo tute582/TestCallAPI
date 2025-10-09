@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>從 API 產生下拉選單</title>
+</head>
+<body>
+  <h2>輸入志工ID</h2>
+  <p>範例1：test_line_id_001v (取得長者1與2)</p>
+  <p>範例2：test_line_id_002v (取得長者2名字)</p>
+  <form id="addForm">
+    <input type="text" id="volunteer_user_id" placeholder="志工ID" required />
+    <button type="submit">確認</button>
+  </form>
+
+  <h3>志工對應的名字列表</h3>
+  <select id="appointmentSelect">
+    <option value="">請先輸入志工ID</option>
+  </select>
+
+  <script>
+    document.getElementById("addForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const liff_id = document.getElementById("volunteer_user_id").value.trim();
+      const select = document.getElementById("appointmentSelect");
+
+      // ✅ 先清空下拉選單內容
+      select.innerHTML = "";
+
+      // 顯示載入中文字
+      const loadingOption = document.createElement("option");
+      loadingOption.textContent = "載入中...";
+      select.appendChild(loadingOption);
+
+      const apiUrl = `https://supabase-api-six.vercel.app/appointments/by-volunteer/${liff_id}`;
+
+      try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error("API 回應錯誤");
+        const data = await response.json();
+
+        select.innerHTML = ""; // 再次清空選單（準備填入新資料）
+
+        const names = data.O_Name || data.elder_name;
+
+        if (names && names.length > 0) {
+          names.forEach(name => {
+            const option = document.createElement("option");
+            option.value = name;
+            option.textContent = name;
+            select.appendChild(option);
+          });
+        } else {
+          const option = document.createElement("option");
+          option.textContent = "目前沒有資料";
+          select.appendChild(option);
+        }
+      } catch (error) {
+        console.error("API 載入錯誤：", error);
+        select.innerHTML = "<option>載入失敗</option>";
+      }
+    });
+  </script>
+</body>
+</html>
