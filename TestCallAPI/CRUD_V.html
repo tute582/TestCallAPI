@@ -9,11 +9,11 @@
 
   <h2>➕ 新增志工</h2>
   <form id="addForm">
-    <input type="text" id="V_Name" placeholder="姓名" required />
-    <input type="text" id="V_Gender" placeholder="性別" required />
-    <input type="number" id="V_Age" placeholder="年齡" />
-    <input type="text" id="V_Mettle" placeholder="專長" />
-    <input type="text" id="FreeTime" placeholder="空閒時間" />
+    <input type="text" id="volunteer_name" placeholder="姓名" required />
+    <input type="text" id="gender" placeholder="性別" required />
+    <input type="number" id="age" placeholder="年齡" />
+    <input type="text" id="personality" placeholder="性格" />
+    <input type="text" id="available_time" placeholder="空閒時間" />
     <button type="submit">新增</button>
   </form>
 
@@ -33,13 +33,13 @@
 
         container.innerHTML = data.map(v => `
           <div style="border:1px solid #ccc; padding:10px; margin:5px;">
-            <p><strong>姓名：</strong> ${v.V_Name}</p>
-            <p><strong>性別：</strong> ${v.V_Gender}</p>
-            <p><strong>年齡：</strong> ${v.V_Age}</p>
-            <p><strong>專長：</strong> ${v.V_Mettle}</p>
-            <p><strong>空閒時間：</strong> ${v.FreeTime}</p>
-            <button onclick="deleteVolunteer('${v.V_UserID}')">刪除</button>
-            <button onclick="updateVolunteer('${v.V_UserID}')">更新</button>
+            <p><strong>姓名：</strong> ${v.volunteer_name}</p>
+            <p><strong>性別：</strong> ${v.gender}</p>
+            <p><strong>年齡：</strong> ${v.age}</p>
+            <p><strong>專長：</strong> ${v.personality}</p>
+            <p><strong>空閒時間：</strong> ${v.available_time}</p>
+            <button onclick="deleteVolunteer('${v.volunteer_user_id}')">刪除</button>
+            <button onclick="updateVolunteer('${v.volunteer_user_id}')">更新</button>
           </div>
         `).join("");
       } catch (err) {
@@ -52,12 +52,12 @@
     document.getElementById("addForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const newVolunteer = {
-        V_Name: document.getElementById("V_Name").value,
-        V_Gender: document.getElementById("V_Gender").value,
-        V_Age: parseInt(document.getElementById("V_Age").value) || null,
-        V_Mettle: document.getElementById("V_Mettle").value,
-        FreeTime: document.getElementById("FreeTime").value,
-        V_UserID: "test_line_id_" + Math.random().toString(36).slice(2, 8) // 假資料
+        volunteer_name: document.getElementById("volunteer_name").value,
+        gender: document.getElementById("gender").value,
+        age: parseInt(document.getElementById("age").value) || null,
+        personality: document.getElementById("personality").value,
+        available_time: document.getElementById("available_time").value,
+        volunteer_user_id: "test_line_id_" + Math.random().toString(36).slice(2, 8) // 假資料
       };
 
       try {
@@ -96,7 +96,7 @@
         const res = await fetch(`${apiUrl}/${id}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ V_Age: parseInt(newAge) })
+          body: JSON.stringify({ age: parseInt(newAge) })
         });
         if (!res.ok) throw new Error("更新失敗");
         alert("✅ 更新成功！");

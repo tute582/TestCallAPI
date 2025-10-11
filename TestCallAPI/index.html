@@ -21,21 +21,21 @@
         const container = document.getElementById("volunteer");
 
         if (!result.role || !result.data) {    //如果「沒有 role」或「沒有 data」的話，就執行裡面的程式碼。
-          window.location.href = "https://11110162.github.io/bookvolunteer/"; // ⬅️ 跳轉頁面
+          window.location.href = "https://tute582.github.io/TestCallAPI/TestCallAPI/CRUD_V.html"; // ⬅️ 跳轉頁面
         }
 
         // 顯示角色（志工 or 長者）
         roleText.innerText = `身份：${result.role}`;    //帶入JSON中role的文字
 
-        // 顯示資料庫存取的志工個人資料
+        // 顯示志工個人資料
         const v = result.data;   // 資料存入v
         container.innerHTML = `
           <div style="border:1px solid #ccc; padding:10px; margin:5px;">
-            <p><strong>姓名：</strong> ${v.V_Name}</p>
-            <p><strong>性別：</strong> ${v.V_Gender}</p>
-            <p><strong>年齡：</strong> ${v.V_Age}</p>
-            <p><strong>專長：</strong> ${v.V_Mettle}</p>
-            <p><strong>空閒時間：</strong> ${v.FreeTime}</p>
+            <p><strong>姓名：</strong> ${v.volunteer_name}</p>
+            <p><strong>性別：</strong> ${v.gender}</p>
+            <p><strong>年齡：</strong> ${v.age}</p>
+            <p><strong>專長：</strong> ${v.personality}</p>
+            <p><strong>空閒時間：</strong> ${v.available_time}</p>
           </div>
         `;   //將取得的資料存入
       })
