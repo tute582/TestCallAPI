@@ -31,7 +31,7 @@
         const res = await fetch(apiUrl);
         const data = await res.json();
 
-        container.innerHTML = data.map(v => `
+        container.innerHTML = data.data.map(v => `
           <div style="border:1px solid #ccc; padding:10px; margin:5px;">
             <p><strong>姓名：</strong> ${v.volunteer_name}</p>
             <p><strong>性別：</strong> ${v.gender}</p>
